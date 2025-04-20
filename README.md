@@ -21,7 +21,7 @@
   <b>Name:</b> Vermeil <br>
   <b>Location:</b> Indonesia / 404<br>
   <b>Status:</b> Baca Manga, Manhwa & Nonton Anime~<br>
-  <b>Waifu:</b> [Vermeil](https://mywaifulist.moe/waifu/vermeil-1)<br>
+  <b>Waifu:</b> [Vermeil]<br>
 </p>
 
 ---
