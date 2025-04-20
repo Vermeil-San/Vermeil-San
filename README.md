@@ -11,7 +11,7 @@
 
 ---
 
-### 「 Player Status 」
+### 「 Profile 」
 
 <p align="center">
   <img src="https://avatars.githubusercontent.com/u/186367325?v=4" width="120" style="border-radius: 50%;" />
