@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discord Timestamp Generator - Stable</title>
+<style>
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #2c2f33;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  margin: 20px;
+}
+.container {
+  background: #23272a;
+  padding: 25px;
+  border-radius: 10px;
+  width: 460px;
+}
+h1 {
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #7289da;
+}
+label { display: block; margin-top: 10px; font-weight: bold; }
+input { width: 100%; padding: 8px; margin-top: 5px; border-radius: 5px; border: none; outline: none; background: #2c2f33; color: #fff; }
+button { width: 100%; padding: 10px; margin-top: 15px; background: #7289da; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+button:hover { background: #5b6eae; }
+.copy-btn { background: #43b581; border: none; padding: 5px 10px; color: #fff; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+.copy-btn:hover { background: #369b6e; }
+.output { margin-top: 20px; padding: 15px; background: #2c2f33; border-left: 5px solid #7289da; border-radius: 5px; word-break: break-word; font-family: monospace; min-height: 40px; }
+.preview { margin-top: 15px; }
+.embed { background: #2f3136; border-left: 5px solid #7289da; border-radius: 5px; padding: 10px; margin-top: 5px; display: flex; flex-direction: column; }
+.embed-header { display: flex; align-items: center; margin-bottom: 5px; }
+.embed-icon { width: 24px; height: 24px; border-radius: 50%; background: #7289da; display: inline-block; margin-right: 10px; }
+.embed-title { font-weight: bold; color: #fff; }
+.embed-text { color: #dcddde; white-space: pre-wrap; font-family: Arial, sans-serif; }
+.style-list { display: grid; grid-template-columns: 50px 1fr; gap: 5px; margin-top: 10px; }
+.style-item { display: contents; }
+.style-item input[type="checkbox"] { grid-column: 1; width: 18px; height: 18px; accent-color: #7289da; vertical-align: middle; }
+.style-item span { grid-column: 2; color: #ccc; font-size: 13px; align-self: center; }
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>Discord Timestamp Generator</h1>
+
+<label for="date">Tanggal (YYYY-MM-DD)</label>
+<input type="date" id="date">
+
+<label for="time">Jam & Menit (HH:MM)</label>
+<input type="time" id="time">
+
+<label>Pilih Style Timestamp</label>
+<div class="style-list" id="styleToggles">
+  <div class="style-item"><input type="checkbox" value="F"><span id="labelF">:F — Tanggal & waktu panjang</span></div>
+  <div class="style-item"><input type="checkbox" value="R"><span id="labelR">:R — Relative / waktu relatif</span></div>
+  <div class="style-item"><input type="checkbox" value="f"><span id="labelf">:f — Tanggal & waktu pendek</span></div>
+  <div class="style-item"><input type="checkbox" value="D"><span id="labelD">:D — Tanggal saja</span></div>
+  <div class="style-item"><input type="checkbox" value="T"><span id="labelT">:T — Waktu saja</span></div>
+  <div class="style-item"><input type="checkbox" value="d"><span id="labeld">:d — Tanggal pendek</span></div>
+</div>
+
+<div class="output" id="output">Timestamp akan muncul di sini...</div>
+<button class="copy-btn" onclick="copyTimestamp()">Copy Semua Timestamp</button>
+
+<div class="preview">
+<strong>Preview Embed Discord:</strong>
+<div class="embed" id="embedPreview">
+  <div class="embed-header">
+    <div class="embed-icon"></div>
+    <div class="embed-title">Timestamp Preview</div>
+  </div>
+  <div class="embed-text" id="embedText">Belum ada timestamp.</div>
+</div>
+</div>
+</div>
+
+<script>
+const dateInput = document.getElementById('date');
+const timeInput = document.getElementById('time');
+const styleToggles = document.querySelectorAll('#styleToggles input[type="checkbox"]');
+const outputDiv = document.getElementById('output');
+const embedTextDiv = document.getElementById('embedText');
+let allTimestamps = '';
+
+// label span
+const labelF = document.getElementById('labelF');
+const labelR = document.getElementById('labelR');
+const labelf = document.getElementById('labelf');
+const labelD = document.getElementById('labelD');
+const labelT = document.getElementById('labelT');
+const labeld = document.getElementById('labeld');
+
+function formatRelative(date){
+    const now = new Date();
+    const diffMs = date - now;
+    const diffSec = Math.floor(diffMs/1000);
+    const diffMin = Math.floor(diffSec/60);
+    const diffH = Math.floor(diffMin/60);
+    const diffD = Math.floor(diffH/24);
+    if(diffSec<60) return 'Baru saja';
+    if(diffMin<60) return diffMin+' menit';
+    if(diffH<24) return diffH+' jam';
+    return diffD+' hari';
+}
+
+function humanReadable(date, style){
+    const optionsDate = {year:'numeric', month:'long', day:'numeric', weekday:'long'};
+    const optionsDateShort = {year:'numeric', month:'short', day:'numeric'};
+    const optionsTime = {hour:'2-digit', minute:'2-digit'};
+    switch(style){
+        case 'F': return date.toLocaleString('en-US', {...optionsDate,...optionsTime});
+        case 'f': return date.toLocaleString('en-US', {...optionsDateShort,...optionsTime});
+        case 'R': return formatRelative(date)+' lalu'; // hanya perkiraan
+        case 'D': return date.toLocaleDateString('en-US', optionsDate);
+        case 'd': return date.toLocaleDateString('en-GB');
+        case 'T': return date.toLocaleTimeString('en-US', optionsTime);
+        default: return date.toString();
+    }
+}
+
+function updateLabels(datetime){
+    labelF.textContent = `:F — ${humanReadable(datetime,'F')}`;
+    labelR.textContent = `:R — ${humanReadable(datetime,'R')}`;
+    labelf.textContent = `:f — ${humanReadable(datetime,'f')}`;
+    labelD.textContent = `:D — ${humanReadable(datetime,'D')}`;
+    labelT.textContent = `:T — ${humanReadable(datetime,'T')}`;
+    labeld.textContent = `:d — ${humanReadable(datetime,'d')}`;
+}
+
+function updatePreview(){
+    const date = dateInput.value;
+    const time = timeInput.value;
+    const selectedStyles = Array.from(styleToggles).filter(c=>c.checked).map(c=>c.value);
+    if(!date || !time){
+        outputDiv.textContent='Timestamp akan muncul di sini...';
+        embedTextDiv.textContent='Belum ada timestamp.';
+        allTimestamps='';
+        return;
+    }
+    const datetime = new Date(`${date}T${time}:00`);
+    if(isNaN(datetime.getTime())){
+        outputDiv.textContent='Format tanggal atau jam salah!';
+        embedTextDiv.textContent='Format tanggal atau jam salah!';
+        allTimestamps='';
+        return;
+    }
+    updateLabels(datetime);
+
+    if(selectedStyles.length===0){
+        outputDiv.textContent='Timestamp akan muncul di sini...';
+        embedTextDiv.textContent='Belum ada timestamp.';
+        allTimestamps='';
+        return;
+    }
+    const unixTS = Math.floor(datetime.getTime()/1000);
+    allTimestamps = selectedStyles.map(s=>`<t:${unixTS}:${s}>`).join(' — ');
+    outputDiv.textContent = allTimestamps;
+    embedTextDiv.textContent = selectedStyles.map(s=>humanReadable(datetime,s)).join(' — ');
+}
+
+function copyTimestamp(){
+    if(!allTimestamps) return;
+    if(navigator.clipboard){
+        navigator.clipboard.writeText(allTimestamps).then(()=>{alert('✅ Semua timestamp berhasil dicopy!');})
+        .catch(()=>{ alert('⚠ Tidak bisa otomatis copy. Sorot teks di bawah dan tekan Copy manual.'); });
+    } else {
+        alert('⚠ Browser tidak mendukung clipboard otomatis. Sorot teks di bawah dan tekan Copy manual.');
+    }
+    outputDiv.focus();
+    if (window.getSelection) {
+        const range = document.createRange();
+        range.selectNodeContents(outputDiv);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+}
+
+dateInput.addEventListener('input',updatePreview);
+timeInput.addEventListener('input',updatePreview);
+styleToggles.forEach(c=>c.addEventListener('change',updatePreview));
+</script>
+
+</body>
+</html>
