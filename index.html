@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=New+Rocker&display=swap" rel="stylesheet">
 <title>Discord Timestamp Generator - Stable</title>
 <style>
 body {
@@ -42,20 +45,263 @@ button:hover { background: #5b6eae; }
 .style-item { display: contents; }
 .style-item input[type="checkbox"] { grid-column: 1; width: 18px; height: 18px; accent-color: #7289da; vertical-align: middle; }
 .style-item span { grid-column: 2; color: #ccc; font-size: 13px; align-self: center; }
+/* Glassmorphism Style untuk Timezone Dropdown */
+select#timezone {
+  width: 100%;
+  padding: 12px;
+  margin-top: 5px;
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  outline: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+select#timezone:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+select#timezone option {
+  background: #23272a;
+  color: white;
+}
+/* Biar ukuran input date/time sama persis dengan select timezone */
+input[type="date"],
+input[type="time"] {
+  box-sizing: border-box;   /* ← wajib supaya width bener */
+  width: 100%;
+  padding: 12px;
+  margin-top: 5px;
+  border-radius: 10px;
+}
+
+input[type="date"]:hover,
+input[type="time"]:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+/* LIST STYLE — jadi kolom biasa, bukan grid */
+.style-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+/* Kotak tiap style-item */
+.style-item {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  align-items: center;
+
+  padding: 8px 10px;
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: 0.2s ease;
+}
+
+.style-item:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Checkbox ukuran kecil & pas */
+.style-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #7289da;
+}
+
+/* Label text */
+.style-item span {
+  font-size: 13px;
+  color: #fff;
+}
+/* Item glass kecil */
+.style-item {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  align-items: center;
+
+  padding: 6px 12px;   /* kiri-kanan lebih besar biar teks nggak mepet */
+  border-radius: 8px;
+
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: 0.2s ease;
+}
+
+.style-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+/* Checkbox */
+.style-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #7289da;
+}
+
+/* Label teks lebih rapi */
+.style-item span {
+  font-size: 12px;
+  color: #fff;
+  line-height: 1.3;   /* bikin teks lebih lega */
+  padding-left: 2px;  /* jarak kecil dari checkbox */
+}
+/* Biar kotaknya bisa diklik */
+.style-item {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden; /* penting untuk ripple */
+}
+
+/* Supaya klik di kotaknya tetap nge-trigger checkbox */
+.style-item input[type="checkbox"] {
+  pointer-events: none;
+}
+
+/* Ripple klik */
+.style-item::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0.4;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Animasi */
+.style-item.ripple::after {
+  animation: rippleAnim 0.4s ease-out;
+}
+
+@keyframes rippleAnim {
+  from {
+    width: 0;
+    height: 0;
+    opacity: 0.4;
+  }
+  to {
+    width: 180px;
+    height: 180px;
+    opacity: 0;
+  }
+}
+/* Ripple Element */
+.style-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.style-item .ripple-effect {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: rgba(255,255,255,0.4);
+  border-radius: 50%;
+  transform: scale(0);
+  opacity: 1;
+  animation: rippleAnim 0.6s ease-out forwards;
+}
+
+@keyframes rippleAnim {
+  to {
+    transform: scale(25);
+    opacity: 0;
+  }
+}
+/* Ripple untuk tombol Copy */
+.copy-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.copy-btn .ripple-center {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: rgba(255,255,255,0.45);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 1;
+  animation: rippleCenterAnim 0.6s ease-out forwards;
+}
+
+@keyframes rippleCenterAnim {
+  to {
+    transform: translate(-50%, -50%) scale(20);
+    opacity: 0;
+  }
+}
+.label-fredoka,
+.preview-title {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600; /* bold */
+}
+.label-rocker {
+  font-family: 'New Rocker', cursive;
+}
+
 </style>
 </head>
 <body>
 
 <div class="container">
-<h1>Discord Timestamp Generator</h1>
+<h1 class="label-rocker">Discord Timestamp Generator</h1>
 
-<label for="date">Tanggal (YYYY-MM-DD)</label>
+<label for="date" class="label-fredoka">Tanggal (YYYY-MM-DD)</label>
 <input type="date" id="date">
 
-<label for="time">Jam & Menit (HH:MM)</label>
+<label for="time" class="label-fredoka">Jam & Menit (HH:MM)</label>
 <input type="time" id="time">
+<label for="timezone" class="label-fredoka">Timezone</label>
+<select id="timezone">
+  <optgroup label="Asia">
+    <option value="Asia/Jakarta">🇮🇩 Jakarta (UTC+7)</option>
+    <option value="Asia/Singapore">🇸🇬 Singapore (UTC+8)</option>
+    <option value="Asia/Tokyo">🇯🇵 Tokyo (UTC+9)</option>
+  </optgroup>
 
-<label>Pilih Style Timestamp</label>
+  <optgroup label="Eropa">
+    <option value="Europe/London">🇬🇧 London (UTC+0)</option>
+    <option value="Europe/Berlin">🇩🇪 Berlin (UTC+1)</option>
+  </optgroup>
+
+  <optgroup label="Amerika">
+    <option value="America/New_York">🇺🇸 New York (UTC-4)</option>
+    <option value="America/Chicago">🇺🇸 Chicago (UTC-5)</option>
+    <option value="America/Los_Angeles">🇺🇸 Los Angeles (UTC-7)</option>
+  </optgroup>
+
+  <optgroup label="Pasifik">
+    <option value="Pacific/Honolulu">🇺🇸 Honolulu (UTC-10)</option>
+  </optgroup>
+</select>
+
+<label class="label-fredoka">Pilih Style Timestamp</label>
 <div class="style-list" id="styleToggles">
   <div class="style-item"><input type="checkbox" value="F"><span id="labelF">:F — Tanggal & waktu panjang</span></div>
   <div class="style-item"><input type="checkbox" value="R"><span id="labelR">:R — Relative / waktu relatif</span></div>
@@ -66,14 +312,14 @@ button:hover { background: #5b6eae; }
 </div>
 
 <div class="output" id="output">Timestamp akan muncul di sini...</div>
-<button class="copy-btn" onclick="copyTimestamp()">Copy Timestamp</button>
+<button class="copy-btn label-fredoka" onclick="copyTimestamp()">Copy Semua Timestamp</button>
 
 <div class="preview">
-<strong>Preview Embed Discord:</strong>
+<strong class="preview-title">Preview Embed Discord:</strong>
 <div class="embed" id="embedPreview">
   <div class="embed-header">
     <div class="embed-icon"></div>
-    <div class="embed-title">Timestamp Preview</div>
+    <div class="embed-title label-fredoka">Timestamp Preview</div>
   </div>
   <div class="embed-text" id="embedText">Belum ada timestamp.</div>
 </div>
@@ -96,17 +342,28 @@ const labelD = document.getElementById('labelD');
 const labelT = document.getElementById('labelT');
 const labeld = document.getElementById('labeld');
 
-function formatRelative(date){
+function formatRelative(date) {
     const now = new Date();
     const diffMs = date - now;
-    const diffSec = Math.floor(diffMs/1000);
-    const diffMin = Math.floor(diffSec/60);
-    const diffH = Math.floor(diffMin/60);
-    const diffD = Math.floor(diffH/24);
-    if(diffSec<60) return 'Baru saja';
-    if(diffMin<60) return diffMin+' menit';
-    if(diffH<24) return diffH+' jam';
-    return diffD+' hari';
+
+    // Selisih waktu absolut
+    const diffSec = Math.abs(Math.floor(diffMs / 1000));
+    const diffMin = Math.floor(diffSec / 60);
+    const diffH = Math.floor(diffMin / 60);
+    const diffD = Math.floor(diffH / 24);
+
+    // Cek apakah masa depan
+    const isFuture = diffMs > 0;
+
+    let text = '';
+    if (diffSec < 60) text = diffSec + ' detik';
+    else if (diffMin < 60) text = diffMin + ' menit';
+    else if (diffH < 24) text = diffH + ' jam';
+    else text = diffD + ' hari';
+
+    return isFuture
+        ? `${text} yang akan datang`
+        : `${text} lalu`;
 }
 
 function humanReadable(date, style){
@@ -116,7 +373,7 @@ function humanReadable(date, style){
     switch(style){
         case 'F': return date.toLocaleString('en-US', {...optionsDate,...optionsTime});
         case 'f': return date.toLocaleString('en-US', {...optionsDateShort,...optionsTime});
-        case 'R': return formatRelative(date)+' lalu'; // hanya perkiraan
+        case 'R': return formatRelative(date); // hanya perkiraan
         case 'D': return date.toLocaleDateString('en-US', optionsDate);
         case 'd': return date.toLocaleDateString('en-GB');
         case 'T': return date.toLocaleTimeString('en-US', optionsTime);
@@ -133,6 +390,19 @@ function updateLabels(datetime){
     labeld.textContent = `:d — ${humanReadable(datetime,'d')}`;
 }
 
+const timezoneSelect = document.getElementById("timezone");
+
+function makeDateWithTimezone(y, m, d, hh, mm, tz) {
+    // Buat ISO manual tanpa timezone
+    const iso = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}T${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:00`;
+
+    // Interpretasikan ISO tersebut sebagai tanggal di timezone yg dipilih
+    const localDate = new Date(iso);
+    const corrected = new Date(localDate.toLocaleString("en-US", { timeZone: tz }));
+
+    return corrected;
+}
+
 function updatePreview(){
     const date = dateInput.value;
     const time = timeInput.value;
@@ -143,7 +413,9 @@ function updatePreview(){
         allTimestamps='';
         return;
     }
-    const datetime = new Date(`${date}T${time}:00`);
+    const [y, m, d] = date.split('-').map(Number);
+const [hh, mm] = time.split(':').map(Number);
+let datetime = makeDateWithTimezone(y, m, d, hh, mm, timezoneSelect.value);
     if(isNaN(datetime.getTime())){
         outputDiv.textContent='Format tanggal atau jam salah!';
         embedTextDiv.textContent='Format tanggal atau jam salah!';
@@ -185,6 +457,53 @@ function copyTimestamp(){
 dateInput.addEventListener('input',updatePreview);
 timeInput.addEventListener('input',updatePreview);
 styleToggles.forEach(c=>c.addEventListener('change',updatePreview));
+timezoneSelect.addEventListener('change', updatePreview);
+document.querySelectorAll(".style-item").forEach(item => {
+    item.addEventListener("click", function(e) {
+
+        // buat ripple baru
+        const ripple = document.createElement("span");
+        ripple.classList.add("ripple-effect");
+
+        // posisi klik relatif ke elemen
+        const rect = item.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+
+        // hapus ripple lama biar nggak numpuk
+        item.querySelectorAll(".ripple-effect").forEach(r => r.remove());
+
+        item.appendChild(ripple);
+
+        // toggle checkbox
+        const cb = item.querySelector("input[type='checkbox']");
+        cb.checked = !cb.checked;
+
+        updatePreview();
+    });
+});
+// Ripple animasi di tombol Copy
+document.querySelector(".copy-btn").addEventListener("click", function(e) {
+    const btn = this;
+
+    // hapus ripple lama
+    btn.querySelectorAll(".ripple-center").forEach(r => r.remove());
+
+    const ripple = document.createElement("span");
+    ripple.classList.add("ripple-center");
+
+    // posisi TENGAH
+    ripple.style.left = btn.offsetWidth / 2 + "px";
+    ripple.style.top = btn.offsetHeight / 2 + "px";
+
+    btn.appendChild(ripple);
+
+    // ripple auto hilang
+    setTimeout(()=> ripple.remove(), 700);
+});
 </script>
 
 </body>
