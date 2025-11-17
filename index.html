@@ -312,10 +312,10 @@ input[type="time"]:hover {
 </div>
 
 <div class="output" id="output">Timestamp akan muncul di sini...</div>
-<button class="copy-btn label-fredoka" onclick="copyTimestamp()">Copy Semua Timestamp</button>
+<button class="copy-btn label-fredoka" onclick="copyTimestamp()">Copy Timestamp</button>
 
 <div class="preview">
-<strong class="preview-title">Preview Embed Discord:</strong>
+<strong class="preview-title">Preview Timestamp Discord:</strong>
 <div class="embed" id="embedPreview">
   <div class="embed-header">
     <div class="embed-icon"></div>
@@ -439,7 +439,7 @@ let datetime = makeDateWithTimezone(y, m, d, hh, mm, timezoneSelect.value);
 function copyTimestamp(){
     if(!allTimestamps) return;
     if(navigator.clipboard){
-        navigator.clipboard.writeText(allTimestamps).then(()=>{alert('✅ Semua timestamp berhasil dicopy!');})
+        navigator.clipboard.writeText(allTimestamps).then(()=>{alert('✅ Timestamp berhasil dicopy!');})
         .catch(()=>{ alert('⚠ Tidak bisa otomatis copy. Sorot teks di bawah dan tekan Copy manual.'); });
     } else {
         alert('⚠ Browser tidak mendukung clipboard otomatis. Sorot teks di bawah dan tekan Copy manual.');
